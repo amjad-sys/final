@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { collection, getDocs, writeBatch, doc, query, where, limit, setDoc } from 'firebase/firestore';
+import { collection, getDocs, writeBatch, doc, query, where, limit } from 'firebase/firestore';
 import { db } from '../firebase';
 import Loading from './Loading';
 
@@ -36,7 +36,7 @@ const UpdateQuestions = () => {
         const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {
-          querySnapshot.forEach(docSnapshot => {
+          for (const docSnapshot of querySnapshot.docs) {
             const qData = docSnapshot.data();
             updateBatch.set(doc(db, 'activeQuestions', docSnapshot.id), {
               ...qData,
@@ -44,7 +44,7 @@ const UpdateQuestions = () => {
             });
             updateBatch.update(doc(db, 'questionLibrary', docSnapshot.id), { used: true });
             totalQuestionsAdded++;
-          });
+          }
         }
       }
 
